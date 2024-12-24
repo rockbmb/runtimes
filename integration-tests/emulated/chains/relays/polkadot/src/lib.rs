@@ -38,6 +38,7 @@ decl_test_relay_chains! {
 			Treasury: polkadot_runtime::Treasury,
 			AssetRate: polkadot_runtime::AssetRate,
 			Hrmp: polkadot_runtime::Hrmp,
+			Referenda: polkadot_runtime::Referenda,
 		}
 	},
 }

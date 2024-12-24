@@ -9962,6 +9962,33 @@ dependencies = [
 ]
 
 [[package]]
+name = "polkadot-integration-tests"
+version = "1.0.0"
+dependencies = [
+ "asset-test-utils",
+ "cumulus-pallet-parachain-system",
+ "emulated-integration-tests-common",
+ "frame-support",
+ "integration-tests-helpers",
+ "pallet-balances",
+ "pallet-conviction-voting",
+ "pallet-message-queue",
+ "pallet-referenda",
+ "pallet-treasury",
+ "pallet-xcm",
+ "parachains-common",
+ "parity-scale-codec",
+ "polkadot-runtime",
+ "polkadot-runtime-common",
+ "polkadot-runtime-constants",
+ "polkadot-system-emulated-network",
+ "sp-runtime 39.0.2",
+ "staging-xcm",
+ "staging-xcm-executor",
+ "xcm-runtime-apis",
+]
+
+[[package]]
 name = "polkadot-parachain-primitives"
 version = "14.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
