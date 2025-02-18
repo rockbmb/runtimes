@@ -14,5 +14,5 @@
 // limitations under the License.
 
 mod claim_assets;
-mod governance;
+mod people;
 mod teleport;
