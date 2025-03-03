@@ -13,10 +13,9 @@ codec = { workspace = true, default-features = true }
 # Substrate
 sp-runtime = { workspace = true, default-features = true }
 frame-support = { workspace = true, default-features = true }
-pallet-balances = { workspace = true, default-features = true }
+frame-system = { workspace = true }
 pallet-conviction-voting = { workspace = true, default-features = true }
 pallet-message-queue = { workspace = true, default-features = true }
-pallet-treasury = { workspace = true, default-features = true }
 pallet-referenda = { workspace = true, default-features = true }
 
 # Polkadot
