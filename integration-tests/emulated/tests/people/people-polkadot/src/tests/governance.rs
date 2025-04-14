@@ -128,7 +128,7 @@ fn relay_commands_add_registrar_wrong_origin() {
 		assert_expected_events!(
 			PeoplePolkadot,
 			vec![
-				RuntimeEvent::MessageQueue(pallet_message_queue::Event::ProcessingFailed { error: ProcessMessageError::Unsupported, .. }) => {},
+				RuntimeEvent::MessageQueue(pallet_message_queue::Event::Processed { success: false, .. }) => {},
 			]
 		);
 	});
@@ -269,7 +269,7 @@ fn relay_commands_kill_identity_wrong_origin() {
 		assert_expected_events!(
 			PeoplePolkadot,
 			vec![
-				RuntimeEvent::MessageQueue(pallet_message_queue::Event::ProcessingFailed { error: ProcessMessageError::Unsupported, .. }) => {},
+				RuntimeEvent::MessageQueue(pallet_message_queue::Event::Processed { success: false, .. }) => {},
 			]
 		);
 	});
@@ -281,8 +281,8 @@ fn relay_commands_add_remove_username_authority() {
 	let people_polkadot_bob = PeoplePolkadot::account_id_of(BOB);
 
 	let origins = vec![
-		(OriginKind::Xcm, GeneralAdminOrigin.into(), "generaladmin"),
-		(OriginKind::Superuser, <Polkadot as Chain>::RuntimeOrigin::root(), "rootusername"),
+		(OriginKind::Xcm, GeneralAdminOrigin.into(), "generaladmin.suffix1"),
+		(OriginKind::Superuser, <Polkadot as Chain>::RuntimeOrigin::root(), "rootusername.suffix1"),
 	];
 	for (origin_kind, origin, usr) in origins {
 		// First, add a username authority.
@@ -359,7 +359,7 @@ fn relay_commands_add_remove_username_authority() {
 		// Accept the given username
 		PeoplePolkadot::execute_with(|| {
 			type PeopleRuntimeEvent = <PeoplePolkadot as Chain>::RuntimeEvent;
-			let full_username = [usr.to_owned(), ".suffix1".to_owned()].concat().into_bytes();
+			let full_username = usr.to_owned().into_bytes();
 
 			assert_ok!(<PeoplePolkadot as PeoplePolkadotPallet>::Identity::accept_username(
 				<PeoplePolkadot as Chain>::RuntimeOrigin::signed(people_polkadot_bob.clone()),
@@ -479,7 +479,7 @@ fn relay_commands_add_remove_username_authority_wrong_origin() {
 		assert_expected_events!(
 			PeoplePolkadot,
 			vec![
-				RuntimeEvent::MessageQueue(pallet_message_queue::Event::ProcessingFailed { error: ProcessMessageError::Unsupported, .. }) => {},
+				RuntimeEvent::MessageQueue(pallet_message_queue::Event::Processed { success: false, .. }) => {},
 			]
 		);
 	});
@@ -529,7 +529,7 @@ fn relay_commands_add_remove_username_authority_wrong_origin() {
 		assert_expected_events!(
 			PeoplePolkadot,
 			vec![
-				RuntimeEvent::MessageQueue(pallet_message_queue::Event::ProcessingFailed { error: ProcessMessageError::Unsupported, .. }) => {},
+				RuntimeEvent::MessageQueue(pallet_message_queue::Event::Processed { success: false, .. }) => {},
 			]
 		);
 	});
