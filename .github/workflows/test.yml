@@ -292,10 +292,38 @@ jobs:
           name: ${{ matrix.runtime.name }}
           path: ${{ env.RUNTIME_BLOB_PATH }}
 
+  define-ecosystem-test-matrix:
+    needs: [runtime-matrix]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    outputs:
+      tests: ${{ steps.tests.outputs.tests }}
+    steps:
+      - name: Checkout polkadot-ecosystem-tests
+        uses: actions/checkout@v4
+        with:
+          repository: open-web3-stack/polkadot-ecosystem-tests
+          path: ecosystem-tests
+      - name: setup node env
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'yarn'
+          cache-dependency-path: ecosystem-tests/yarn.lock
+      - name: Define Tests
+        id: tests
+        working-directory: ./ecosystem-tests
+        run: |
+          echo tests=$(cd packages && ls */src/*.test.ts | jq -R -s -c 'split("\n")[:-1]') >> "$GITHUB_OUTPUT"
+
   ecosystem-tests:
-    needs: [runtime-matrix, build-runtimes]
+    needs: [define-ecosystem-test-matrix, build-runtimes]
     runs-on: self-hosted
     if: github.event_name == 'pull_request'
+    strategy:
+      fail-fast: false
+      matrix:
+        test: ${{ fromJSON(needs.define-ecosystem-test-matrix.outputs.tests) }}
     steps:
       - name: Free Disk Space (Ubuntu)
         if: ${{ runner.environment == 'github-hosted' }}
@@ -336,7 +364,7 @@ jobs:
         with:
           timeout_minutes: 90
           max_attempts: 3
-          command: cd ecosystem-tests && yarn test
+          command: cd ecosystem-tests && yarn test packages/${{ matrix.test }}
 
   # This will only run if all the tests in its "needs" array passed.
   # Add this as your required job, becuase if the matrix changes size (new things get added)
