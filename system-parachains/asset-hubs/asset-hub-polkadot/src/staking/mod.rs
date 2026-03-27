@@ -107,8 +107,8 @@ parameter_types! {
 pub struct RebagIffMigrationDone;
 impl sp_runtime::traits::Get<u32> for RebagIffMigrationDone {
 	fn get() -> u32 {
-		if cfg!(feature = "runtime-benchmarks") ||
-			pallet_ah_migrator::MigrationEndBlock::<Runtime>::get()
+		if cfg!(feature = "runtime-benchmarks")
+			|| pallet_ah_migrator::MigrationEndBlock::<Runtime>::get()
 				.is_some_and(|n| frame_system::Pallet::<Runtime>::block_number() > n + 1)
 		{
 			10
@@ -376,7 +376,7 @@ impl EraPayout {
 			// Step every two years.
 			step_duration,
 		) else {
-			return 0
+			return 0;
 		};
 
 		// The last step size tells us the expected TI increase over the current two year
@@ -568,10 +568,12 @@ pub struct KeysMessageToXcm;
 impl Convert<rc_client::KeysMessage<AccountId>, Xcm<()>> for KeysMessageToXcm {
 	fn convert(msg: rc_client::KeysMessage<AccountId>) -> Xcm<()> {
 		let encoded_call = match msg {
-			rc_client::KeysMessage::SetKeys { stash, keys } =>
-				RelayChainRuntimePallets::AhClient(AhClientCalls::SetKeys { stash, keys }).encode(),
-			rc_client::KeysMessage::PurgeKeys { stash } =>
-				RelayChainRuntimePallets::AhClient(AhClientCalls::PurgeKeys { stash }).encode(),
+			rc_client::KeysMessage::SetKeys { stash, keys } => {
+				RelayChainRuntimePallets::AhClient(AhClientCalls::SetKeys { stash, keys }).encode()
+			},
+			rc_client::KeysMessage::PurgeKeys { stash } => {
+				RelayChainRuntimePallets::AhClient(AhClientCalls::PurgeKeys { stash }).encode()
+			},
 		};
 		rc_client::build_transact_xcm(encoded_call)
 	}
@@ -969,9 +971,9 @@ mod tests {
 				MILLISECONDS_PER_DAY,
 			);
 			let two_year_rate = EraPayout::BI_ANNUAL_RATE;
-			let era_rate = two_year_rate *
-				Perbill::from_rational(1u32, 2u32) *
-				Perbill::from_rational(100u32, 36525u32);
+			let era_rate = two_year_rate
+				* Perbill::from_rational(1u32, 2u32)
+				* Perbill::from_rational(100u32, 36525u32);
 			let assumed_payout = era_rate * (TARGET_TI - MARCH_TI);
 			assert_relative_eq!(
 				(to_stakers as f64 + to_treasury as f64),
@@ -984,9 +986,7 @@ mod tests {
 	// The emission values for the two year periods are as expected.
 	#[test]
 	fn stepped_inflation_two_year_values_correct() {
-		ExtBuilder::<Runtime>::default()
-		.build()
-		.execute_with(|| {
+		ExtBuilder::<Runtime>::default().build().execute_with(|| {
 			let two_years: RC_BlockNumber = RC_YEARS * 2;
 			pallet_balances::pallet::TotalIssuance::<Runtime, ()>::set(MARCH_TI);
 

@@ -122,7 +122,7 @@ use frame_support::{
 	genesis_builder_helper::{build_state, get_preset},
 	ord_parameter_types, parameter_types,
 	traits::{
-		fungible::{self, HoldConsideration},
+		fungible::{self, HoldConsideration, ItemOf},
 		fungibles,
 		tokens::imbalance::{ResolveAssetTo, ResolveTo},
 		AsEnsureOriginWithArg, ConstBool, ConstU32, ConstU64, ConstU8, Contains, EitherOf,
@@ -629,14 +629,14 @@ impl InstanceFilter<RuntimeCall> for ProxyType {
 			),
 			ProxyType::Governance => matches!(
 				c,
-				RuntimeCall::Treasury(..) |
-					RuntimeCall::Bounties(..) |
-					RuntimeCall::Utility(..) |
-					RuntimeCall::ChildBounties(..) |
-					RuntimeCall::MultiAssetBounties(..) |
-					RuntimeCall::ConvictionVoting(..) |
-					RuntimeCall::Referenda(..) |
-					RuntimeCall::Whitelist(..)
+				RuntimeCall::Treasury(..)
+					| RuntimeCall::Bounties(..)
+					| RuntimeCall::Utility(..)
+					| RuntimeCall::ChildBounties(..)
+					| RuntimeCall::MultiAssetBounties(..)
+					| RuntimeCall::ConvictionVoting(..)
+					| RuntimeCall::Referenda(..)
+					| RuntimeCall::Whitelist(..)
 			),
 			ProxyType::Staking => matches!(
 				c,
@@ -657,16 +657,16 @@ impl InstanceFilter<RuntimeCall> for ProxyType {
 			),
 			ProxyType::StakingOperator => matches!(
 				c,
-				RuntimeCall::Staking(pallet_staking_async::Call::validate { .. }) |
-					RuntimeCall::Staking(pallet_staking_async::Call::chill { .. }) |
-					RuntimeCall::Staking(pallet_staking_async::Call::kick { .. }) |
-					RuntimeCall::StakingRcClient(
+				RuntimeCall::Staking(pallet_staking_async::Call::validate { .. })
+					| RuntimeCall::Staking(pallet_staking_async::Call::chill { .. })
+					| RuntimeCall::Staking(pallet_staking_async::Call::kick { .. })
+					| RuntimeCall::StakingRcClient(
 						pallet_staking_async_rc_client::Call::set_keys { .. }
 					) | RuntimeCall::StakingRcClient(
 					pallet_staking_async_rc_client::Call::purge_keys { .. }
-				) | RuntimeCall::Utility(pallet_utility::Call::batch { .. }) |
-					RuntimeCall::Utility(pallet_utility::Call::batch_all { .. }) |
-					RuntimeCall::Utility(pallet_utility::Call::force_batch { .. })
+				) | RuntimeCall::Utility(pallet_utility::Call::batch { .. })
+					| RuntimeCall::Utility(pallet_utility::Call::batch_all { .. })
+					| RuntimeCall::Utility(pallet_utility::Call::force_batch { .. })
 			),
 			ProxyType::NominationPools => {
 				matches!(c, RuntimeCall::NominationPools(..) | RuntimeCall::Utility(..))
@@ -674,9 +674,9 @@ impl InstanceFilter<RuntimeCall> for ProxyType {
 			ProxyType::CancelProxy => {
 				matches!(
 					c,
-					RuntimeCall::Proxy(pallet_proxy::Call::reject_announcement { .. }) |
-						RuntimeCall::Utility { .. } |
-						RuntimeCall::Multisig { .. }
+					RuntimeCall::Proxy(pallet_proxy::Call::reject_announcement { .. })
+						| RuntimeCall::Utility { .. }
+						| RuntimeCall::Multisig { .. }
 				)
 			},
 			ProxyType::ParaRegistration => false, // Only for remote proxy
@@ -684,82 +684,82 @@ impl InstanceFilter<RuntimeCall> for ProxyType {
 			ProxyType::Assets => {
 				matches!(
 					c,
-					RuntimeCall::Assets { .. } |
-						RuntimeCall::Utility { .. } |
-						RuntimeCall::Multisig { .. } |
-						RuntimeCall::Nfts { .. } |
-						RuntimeCall::Uniques { .. }
+					RuntimeCall::Assets { .. }
+						| RuntimeCall::Utility { .. }
+						| RuntimeCall::Multisig { .. }
+						| RuntimeCall::Nfts { .. }
+						| RuntimeCall::Uniques { .. }
 				)
 			},
 			ProxyType::AssetOwner => matches!(
 				c,
-				RuntimeCall::Assets(TrustBackedAssetsCall::create { .. }) |
-					RuntimeCall::Assets(TrustBackedAssetsCall::start_destroy { .. }) |
-					RuntimeCall::Assets(TrustBackedAssetsCall::destroy_accounts { .. }) |
-					RuntimeCall::Assets(TrustBackedAssetsCall::destroy_approvals { .. }) |
-					RuntimeCall::Assets(TrustBackedAssetsCall::finish_destroy { .. }) |
-					RuntimeCall::Assets(TrustBackedAssetsCall::transfer_ownership { .. }) |
-					RuntimeCall::Assets(TrustBackedAssetsCall::set_team { .. }) |
-					RuntimeCall::Assets(TrustBackedAssetsCall::set_metadata { .. }) |
-					RuntimeCall::Assets(TrustBackedAssetsCall::clear_metadata { .. }) |
-					RuntimeCall::Assets(TrustBackedAssetsCall::set_min_balance { .. }) |
-					RuntimeCall::Nfts(pallet_nfts::Call::create { .. }) |
-					RuntimeCall::Nfts(pallet_nfts::Call::destroy { .. }) |
-					RuntimeCall::Nfts(pallet_nfts::Call::redeposit { .. }) |
-					RuntimeCall::Nfts(pallet_nfts::Call::transfer_ownership { .. }) |
-					RuntimeCall::Nfts(pallet_nfts::Call::set_team { .. }) |
-					RuntimeCall::Nfts(pallet_nfts::Call::set_collection_max_supply { .. }) |
-					RuntimeCall::Nfts(pallet_nfts::Call::lock_collection { .. }) |
-					RuntimeCall::Uniques(pallet_uniques::Call::create { .. }) |
-					RuntimeCall::Uniques(pallet_uniques::Call::destroy { .. }) |
-					RuntimeCall::Uniques(pallet_uniques::Call::transfer_ownership { .. }) |
-					RuntimeCall::Uniques(pallet_uniques::Call::set_team { .. }) |
-					RuntimeCall::Uniques(pallet_uniques::Call::set_metadata { .. }) |
-					RuntimeCall::Uniques(pallet_uniques::Call::set_attribute { .. }) |
-					RuntimeCall::Uniques(pallet_uniques::Call::set_collection_metadata { .. }) |
-					RuntimeCall::Uniques(pallet_uniques::Call::clear_metadata { .. }) |
-					RuntimeCall::Uniques(pallet_uniques::Call::clear_attribute { .. }) |
-					RuntimeCall::Uniques(pallet_uniques::Call::clear_collection_metadata { .. }) |
-					RuntimeCall::Uniques(pallet_uniques::Call::set_collection_max_supply { .. }) |
-					RuntimeCall::Utility { .. } |
-					RuntimeCall::Multisig { .. }
+				RuntimeCall::Assets(TrustBackedAssetsCall::create { .. })
+					| RuntimeCall::Assets(TrustBackedAssetsCall::start_destroy { .. })
+					| RuntimeCall::Assets(TrustBackedAssetsCall::destroy_accounts { .. })
+					| RuntimeCall::Assets(TrustBackedAssetsCall::destroy_approvals { .. })
+					| RuntimeCall::Assets(TrustBackedAssetsCall::finish_destroy { .. })
+					| RuntimeCall::Assets(TrustBackedAssetsCall::transfer_ownership { .. })
+					| RuntimeCall::Assets(TrustBackedAssetsCall::set_team { .. })
+					| RuntimeCall::Assets(TrustBackedAssetsCall::set_metadata { .. })
+					| RuntimeCall::Assets(TrustBackedAssetsCall::clear_metadata { .. })
+					| RuntimeCall::Assets(TrustBackedAssetsCall::set_min_balance { .. })
+					| RuntimeCall::Nfts(pallet_nfts::Call::create { .. })
+					| RuntimeCall::Nfts(pallet_nfts::Call::destroy { .. })
+					| RuntimeCall::Nfts(pallet_nfts::Call::redeposit { .. })
+					| RuntimeCall::Nfts(pallet_nfts::Call::transfer_ownership { .. })
+					| RuntimeCall::Nfts(pallet_nfts::Call::set_team { .. })
+					| RuntimeCall::Nfts(pallet_nfts::Call::set_collection_max_supply { .. })
+					| RuntimeCall::Nfts(pallet_nfts::Call::lock_collection { .. })
+					| RuntimeCall::Uniques(pallet_uniques::Call::create { .. })
+					| RuntimeCall::Uniques(pallet_uniques::Call::destroy { .. })
+					| RuntimeCall::Uniques(pallet_uniques::Call::transfer_ownership { .. })
+					| RuntimeCall::Uniques(pallet_uniques::Call::set_team { .. })
+					| RuntimeCall::Uniques(pallet_uniques::Call::set_metadata { .. })
+					| RuntimeCall::Uniques(pallet_uniques::Call::set_attribute { .. })
+					| RuntimeCall::Uniques(pallet_uniques::Call::set_collection_metadata { .. })
+					| RuntimeCall::Uniques(pallet_uniques::Call::clear_metadata { .. })
+					| RuntimeCall::Uniques(pallet_uniques::Call::clear_attribute { .. })
+					| RuntimeCall::Uniques(pallet_uniques::Call::clear_collection_metadata { .. })
+					| RuntimeCall::Uniques(pallet_uniques::Call::set_collection_max_supply { .. })
+					| RuntimeCall::Utility { .. }
+					| RuntimeCall::Multisig { .. }
 			),
 			ProxyType::AssetManager => matches!(
 				c,
-				RuntimeCall::Assets(TrustBackedAssetsCall::mint { .. }) |
-					RuntimeCall::Assets(TrustBackedAssetsCall::burn { .. }) |
-					RuntimeCall::Assets(TrustBackedAssetsCall::freeze { .. }) |
-					RuntimeCall::Assets(TrustBackedAssetsCall::block { .. }) |
-					RuntimeCall::Assets(TrustBackedAssetsCall::thaw { .. }) |
-					RuntimeCall::Assets(TrustBackedAssetsCall::freeze_asset { .. }) |
-					RuntimeCall::Assets(TrustBackedAssetsCall::thaw_asset { .. }) |
-					RuntimeCall::Assets(TrustBackedAssetsCall::touch_other { .. }) |
-					RuntimeCall::Assets(TrustBackedAssetsCall::refund_other { .. }) |
-					RuntimeCall::Nfts(pallet_nfts::Call::force_mint { .. }) |
-					RuntimeCall::Nfts(pallet_nfts::Call::update_mint_settings { .. }) |
-					RuntimeCall::Nfts(pallet_nfts::Call::mint_pre_signed { .. }) |
-					RuntimeCall::Nfts(pallet_nfts::Call::set_attributes_pre_signed { .. }) |
-					RuntimeCall::Nfts(pallet_nfts::Call::lock_item_transfer { .. }) |
-					RuntimeCall::Nfts(pallet_nfts::Call::unlock_item_transfer { .. }) |
-					RuntimeCall::Nfts(pallet_nfts::Call::lock_item_properties { .. }) |
-					RuntimeCall::Nfts(pallet_nfts::Call::set_metadata { .. }) |
-					RuntimeCall::Nfts(pallet_nfts::Call::clear_metadata { .. }) |
-					RuntimeCall::Nfts(pallet_nfts::Call::set_collection_metadata { .. }) |
-					RuntimeCall::Nfts(pallet_nfts::Call::clear_collection_metadata { .. }) |
-					RuntimeCall::Uniques(pallet_uniques::Call::mint { .. }) |
-					RuntimeCall::Uniques(pallet_uniques::Call::burn { .. }) |
-					RuntimeCall::Uniques(pallet_uniques::Call::freeze { .. }) |
-					RuntimeCall::Uniques(pallet_uniques::Call::thaw { .. }) |
-					RuntimeCall::Uniques(pallet_uniques::Call::freeze_collection { .. }) |
-					RuntimeCall::Uniques(pallet_uniques::Call::thaw_collection { .. }) |
-					RuntimeCall::Utility { .. } |
-					RuntimeCall::Multisig { .. }
+				RuntimeCall::Assets(TrustBackedAssetsCall::mint { .. })
+					| RuntimeCall::Assets(TrustBackedAssetsCall::burn { .. })
+					| RuntimeCall::Assets(TrustBackedAssetsCall::freeze { .. })
+					| RuntimeCall::Assets(TrustBackedAssetsCall::block { .. })
+					| RuntimeCall::Assets(TrustBackedAssetsCall::thaw { .. })
+					| RuntimeCall::Assets(TrustBackedAssetsCall::freeze_asset { .. })
+					| RuntimeCall::Assets(TrustBackedAssetsCall::thaw_asset { .. })
+					| RuntimeCall::Assets(TrustBackedAssetsCall::touch_other { .. })
+					| RuntimeCall::Assets(TrustBackedAssetsCall::refund_other { .. })
+					| RuntimeCall::Nfts(pallet_nfts::Call::force_mint { .. })
+					| RuntimeCall::Nfts(pallet_nfts::Call::update_mint_settings { .. })
+					| RuntimeCall::Nfts(pallet_nfts::Call::mint_pre_signed { .. })
+					| RuntimeCall::Nfts(pallet_nfts::Call::set_attributes_pre_signed { .. })
+					| RuntimeCall::Nfts(pallet_nfts::Call::lock_item_transfer { .. })
+					| RuntimeCall::Nfts(pallet_nfts::Call::unlock_item_transfer { .. })
+					| RuntimeCall::Nfts(pallet_nfts::Call::lock_item_properties { .. })
+					| RuntimeCall::Nfts(pallet_nfts::Call::set_metadata { .. })
+					| RuntimeCall::Nfts(pallet_nfts::Call::clear_metadata { .. })
+					| RuntimeCall::Nfts(pallet_nfts::Call::set_collection_metadata { .. })
+					| RuntimeCall::Nfts(pallet_nfts::Call::clear_collection_metadata { .. })
+					| RuntimeCall::Uniques(pallet_uniques::Call::mint { .. })
+					| RuntimeCall::Uniques(pallet_uniques::Call::burn { .. })
+					| RuntimeCall::Uniques(pallet_uniques::Call::freeze { .. })
+					| RuntimeCall::Uniques(pallet_uniques::Call::thaw { .. })
+					| RuntimeCall::Uniques(pallet_uniques::Call::freeze_collection { .. })
+					| RuntimeCall::Uniques(pallet_uniques::Call::thaw_collection { .. })
+					| RuntimeCall::Utility { .. }
+					| RuntimeCall::Multisig { .. }
 			),
 			ProxyType::Collator => matches!(
 				c,
-				RuntimeCall::CollatorSelection { .. } |
-					RuntimeCall::Utility { .. } |
-					RuntimeCall::Multisig { .. }
+				RuntimeCall::CollatorSelection { .. }
+					| RuntimeCall::Utility { .. }
+					| RuntimeCall::Multisig { .. }
 			),
 		}
 	}
@@ -1094,6 +1094,59 @@ impl pallet_assets::Config<PoolAssetsInstance> for Runtime {
 	type BenchmarkHelper = ();
 }
 
+parameter_types! {
+	pub const PsmStablecoinAssetId: u32 = 4242;
+	pub const PsmMinSwapAmount: Balance = 100_000_000;
+	pub const PsmPalletId: PalletId = PalletId(*b"py/pegsm");
+	pub PsmInsuranceFundAccount: AccountId =
+		sp_runtime::traits::AccountIdConversion::<AccountId>::into_account_truncating(
+			&PalletId(*b"py/insur"),
+		);
+}
+
+type PsmStableAsset = ItemOf<Assets, PsmStablecoinAssetId, AccountId>;
+
+pub struct NoVaultsCeiling;
+impl pallet_psm::VaultsInterface for NoVaultsCeiling {
+	type Balance = Balance;
+
+	fn get_maximum_issuance() -> Balance {
+		Balance::MAX
+	}
+}
+
+pub struct EnsurePsmManager;
+impl frame_support::traits::EnsureOrigin<RuntimeOrigin> for EnsurePsmManager {
+	type Success = pallet_psm::PsmManagerLevel;
+
+	fn try_origin(o: RuntimeOrigin) -> Result<Self::Success, RuntimeOrigin> {
+		use frame_system::RawOrigin;
+
+		match o.clone().into() {
+			Ok(RawOrigin::Root) => Ok(pallet_psm::PsmManagerLevel::Full),
+			_ => Err(o),
+		}
+	}
+
+	#[cfg(feature = "runtime-benchmarks")]
+	fn try_successful_origin() -> Result<RuntimeOrigin, ()> {
+		Ok(RuntimeOrigin::root())
+	}
+}
+
+impl pallet_psm::Config for Runtime {
+	type Fungibles = Assets;
+	type AssetId = u32;
+	type VaultsInterface = NoVaultsCeiling;
+	type ManagerOrigin = EnsurePsmManager;
+	type WeightInfo = pallet_psm::weights::SubstrateWeight<Runtime>;
+	type StableAsset = PsmStableAsset;
+	type FeeHandler = ResolveTo<PsmInsuranceFundAccount, PsmStableAsset>;
+	type PalletId = PsmPalletId;
+	type MinSwapAmount = PsmMinSwapAmount;
+	type MaxExternalAssets = ConstU32<10>;
+}
+
 /// Union fungibles implementation for `Assets`` and `ForeignAssets`.
 pub type LocalAndForeignAssets = fungibles::UnionOf<
 	Assets,
@@ -1240,8 +1293,9 @@ impl frame_support::traits::EnsureOriginWithArg<RuntimeOrigin, RuntimeParameters
 		use crate::RuntimeParametersKey::*;
 
 		match key {
-			StakingElection(_) =>
-				EitherOf::<EnsureRoot<AccountId>, StakingAdmin>::ensure_origin(origin.clone()),
+			StakingElection(_) => {
+				EitherOf::<EnsureRoot<AccountId>, StakingAdmin>::ensure_origin(origin.clone())
+			},
 			// technical params, can be controlled by the fellowship voice.
 			Scheduler(_) | MessageQueue(_) => EitherOfDiverse::<
 				EnsureRoot<AccountId>,
@@ -1554,6 +1608,7 @@ construct_runtime!(
 		ForeignAssets: pallet_assets::<Instance2> = 53,
 		PoolAssets: pallet_assets::<Instance3> = 54,
 		AssetConversion: pallet_asset_conversion = 55,
+		Psm: pallet_psm = 56,
 
 		// OpenGov stuff
 		Treasury: pallet_treasury = 60,
