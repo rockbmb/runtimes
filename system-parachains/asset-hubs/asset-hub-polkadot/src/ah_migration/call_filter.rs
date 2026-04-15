@@ -140,6 +140,7 @@ pub fn call_allowed_status(
 		Whitelist(..) => OFF,
 		XcmpQueue(..) => ON, // Allow updating XCM settings. Only by Fellowship and root.
 		Parameters(..) => ON, // allow governance to still update any params if needed
+		Psm(..) => ON,
 		Revive(..) => OFF,
 	};
 	// Exhaustive match. Compiler ensures that we did not miss any.
@@ -211,6 +212,7 @@ pub fn call_allowed_before_migration(
 		| Utility(..)
 		| Whitelist(..)
 		| XcmpQueue(..)
+		| Psm(..)
 		| Revive(..)
 		| Parameters(..) => ON,
 	}
